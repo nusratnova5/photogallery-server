@@ -27,6 +27,7 @@ async function run(){
             const services = await cursor.sort({_id: -1}).toArray();
             res.send(services);
         })
+
         app.get('/home', async (req,res)=>{
             const query ={}
             const cursor = serviceCollection.find(query);
@@ -53,6 +54,42 @@ async function run(){
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             res.send(result);
+        })
+
+        app.get('/reviews', async (req,res)=>{
+            const query ={}
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.sort({_id: -1}).toArray();
+            res.send(reviews);
+        })
+
+        app.delete('/reviews/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const review = await reviewCollection.deleteOne(query);
+            res.send(review);
+        })
+
+        app.get('/reviews/:id', async (req,res)=>{
+            const id = req.params.id;
+            const query ={_id: ObjectId(id)};
+            const review = await reviewCollection.findOne(query);
+            res.send(review);
+        })
+
+        app.put('/update', async(req,res) => {
+            const body = req.body;
+            console.log(body)
+            const options = {upsert: true};
+            const id = body.id;
+            const query = {_id: ObjectId(id)};
+            const updateDoc = {
+                $set: {
+                    review: body.review
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updateDoc, options);
+            res.send(result)
         })
     }
     finally{
