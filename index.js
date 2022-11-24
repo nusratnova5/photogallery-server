@@ -27,7 +27,7 @@ async function run(){
             const services = await cursor.sort({_id: -1}).toArray();
             res.send(services);
         })
-
+        /*home*/
         app.get('/home', async (req,res)=>{
             const query ={}
             const cursor = serviceCollection.find(query);
